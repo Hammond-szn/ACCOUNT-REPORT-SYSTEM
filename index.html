@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .reset-btn {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .reset-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .summary.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-title {
+            text-align: center;
+            color: #667eea;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 15px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #333;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .comparison-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #667eea;
+        }
+
+        .comparison-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .comparison-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .comparison-value {
+            font-size: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .bto {
+            color: #22c55e;
+            border-left: 4px solid #22c55e;
+        }
+
+        .bta {
+            color: #f59e0b;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .currency {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Financial Calculator</h1>
+            <p>Account Summary & Analysis</p>
+        </div>
+
+        <form id="calculatorForm">
+            <div class="form-group">
+                <label for="totalGross">Total Gross Amount</label>
+                <input 
+                    type="text" 
+                    id="totalGross" 
+                    placeholder="e.g., 10,000.50" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="totalWin">Total Win Amount</label>
+                <input 
+                    type="text" 
+                    id="totalWin" 
+                    placeholder="e.g., 5,000.25" 
+                    required
+                >
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="calculate-btn" onclick="calculateResults()">Calculate</button>
+                <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div class="summary" id="summary">
+            <div class="summary-title">Account Summary</div>
+            
+            <div class="summary-row">
+                <span class="summary-label">Total Gross</span>
+                <span class="summary-value" id="summaryGross">0.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Total Net (Gross - 35%)</span>
+                <span class="summary-value" id="summaryNet">0.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Total Wins</span>
+                <span class="summary-value" id="summaryWins">0.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Wins Net (Win × 240)</span>
+                <span class="summary-value" id="summaryWinNet">0.00</span>
+            </div>
+
+            <div class="comparison-section">
+                <div id="comparisonResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format number with thousands separator
+        function formatNumber(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Parse number from input (handles commas)
+        function parseInputNumber(value) {
+            if (typeof value === 'string') {
+                // Remove all commas and convert to number
+                return parseFloat(value.replace(/,/g, ''));
+            }
+            return parseFloat(value);
+        }
+
+        // Format input field while typing
+        function formatInputValue(inputElement) {
+            let value = inputElement.value;
+            // Remove all non-numeric characters except decimal point
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Parse the numeric value
+            const numValue = parseFloat(value);
+            
+            if (!isNaN(numValue) && value !== '') {
+                // Format with commas
+                inputElement.value = formatNumber(numValue);
+            }
+        }
+
+        function calculateResults() {
+            const totalGross = parseInputNumber(document.getElementById('totalGross').value);
+            const totalWin = parseInputNumber(document.getElementById('totalWin').value);
+
+            // Validation
+            if (isNaN(totalGross) || isNaN(totalWin) || totalGross < 0 || totalWin < 0) {
+                alert('Please enter valid positive numbers');
+                return;
+            }
+
+            // Calculations
+            const net = totalGross - (totalGross * 0.35);
+            const winNet = totalWin * 240;
+
+            // Update summary display
+            document.getElementById('summaryGross').textContent = formatNumber(totalGross);
+            document.getElementById('summaryNet').textContent = formatNumber(net);
+            document.getElementById('summaryWins').textContent = formatNumber(totalWin);
+            document.getElementById('summaryWinNet').textContent = formatNumber(winNet);
+
+            // Comparison logic
+            const comparisonHtml = net > winNet 
+                ? `<div class="comparison-row bto">
+                    <span class="comparison-label">BTO (Balance To OFFICE)</span>
+                    <span class="comparison-value">${formatNumber(net - winNet)}</span>
+                   </div>`
+                : `<div class="comparison-row bta">
+                    <span class="comparison-label">BTA (Balance To AGENT)</span>
+                    <span class="comparison-value">${formatNumber(winNet - net)}</span>
+                   </div>`;
+
+            document.getElementById('comparisonResult').innerHTML = comparisonHtml;
+
+            // Show summary
+            document.getElementById('summary').classList.add('show');
+        }
+
+        function resetForm() {
+            document.getElementById('calculatorForm').reset();
+            document.getElementById('summary').classList.remove('show');
+            document.getElementById('totalGross').focus();
+        }
+
+        // Format input fields on blur
+        document.getElementById('totalGross').addEventListener('blur', function() {
+            formatInputValue(this);
+        });
+
+        document.getElementById('totalWin').addEventListener('blur', function() {
+            formatInputValue(this);
+        });
+
+        // Allow Enter key to calculate
+        document.getElementById('totalWin').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateResults();
+            }
+        });
+
+        // Focus first input on load
+        window.addEventListener('load', function() {
+            document.getElementById('totalGross').focus();
+        });
+    </script>
+</body>
+</html>
